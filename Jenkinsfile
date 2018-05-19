@@ -6,7 +6,7 @@ node {
 
     def appName = 'gceme'
     def feSvcName = "${appName}-frontend"
-    def imageTag = "$DOCKER_HUB_CREDS_USR/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    def imageTag = "${DOCKER_HUB_CREDS_USR}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 
     checkout scm
 
@@ -27,7 +27,7 @@ node {
         environment {
             DOCKER_HUB_CREDS = credentials('docker-hub')
         }
-        sh("docker login -u $DOCKER_HUB_CREDS_USR -p $DOCKER_HUB_CREDS_PSW")
+        sh("docker login -u ${DOCKER_HUB_CREDS_USR} -p ${DOCKER_HUB_CREDS_PSW}")
         sh("docker push ${imageTag}")
     }
 
