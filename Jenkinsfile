@@ -1,9 +1,5 @@
 node {
 
-    environment {
-        DOCKER_HUB_CREDS = credentials('docker-hub')
-    }
-
     def appName = 'gceme'
     def feSvcName = "${appName}-frontend"
     def imageTag = "mivor/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
@@ -37,9 +33,9 @@ node {
             case "canary":
                 // Change deployed image in canary to the one we just built
                 sh("kubectl get ns ${env.BRANCH_NAME} || kubectl create ns ${env.BRANCH_NAME}")
-                sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/canary/*.yaml")
-                sh("kubectl --namespace=production apply -f k8s/services/")
-                sh("kubectl --namespace=production apply -f k8s/canary/")
+                sh("sed -i.bak 's#mivor/gceme:canary-7#${imageTag}#' ./k8s/canary/*.yaml")
+                sh("kubectl --namespace=canary apply -f k8s/services/")
+                sh("kubectl --namespace=canary apply -f k8s/canary/")
                 sh("sleep 4")
                 sh("echo http://kubectl get -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  --namespace=${env.BRANCH_NAME} services gceme-frontend")
                 break
