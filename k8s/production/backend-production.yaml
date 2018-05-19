@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: mivor/gceme:master-7
+        image: mivor/gceme:master-1
         resources:
           limits:
             memory: "500Mi"
