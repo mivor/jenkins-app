@@ -37,7 +37,7 @@ node {
                 sh("kubectl --namespace=production apply -f k8s/services/")
                 sh("kubectl --namespace=canary apply -f k8s/canary/")
                 sh("sleep 4")
-                sh("export PUBLIC_IP=$(kubectl get -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  --namespace=production services gceme-frontend)")
+                sh("export PUBLIC_IP=$$(kubectl get -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  --namespace=production services gceme-frontend)")
                 sh("echo http://$PUBLIC_IP")
                 break
 
@@ -49,8 +49,8 @@ node {
                 sh("kubectl --namespace=production apply -f k8s/services/")
                 sh("kubectl --namespace=production apply -f k8s/production/")
                 sh("sleep 4")
-                sh("export PUBLIC_IP=$(kubectl get -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  --namespace=production services gceme-frontend)")
-                sh("echo http://$PUBLIC_IP")
+                sh("export PUBLIC_IP=$$(kubectl get -o jsonpath='{.status.loadBalancer.ingress[0].ip}'  --namespace=production services gceme-frontend)")
+                sh("echo http://$$PUBLIC_IP")
                 break
 
             // Roll out a dev environment
