@@ -4,9 +4,9 @@ node {
         DOCKER_HUB_CREDS = credentials('docker-hub')
     }
 
-    // def appName = 'gceme'
-    // def feSvcName = "${appName}-frontend"
-    // def imageTag = "${DOCKER_HUB_CREDS_USR}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    def appName = 'gceme'
+    def feSvcName = "${appName}-frontend"
+    def imageTag = "mivor/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 
     checkout scm
 
@@ -24,9 +24,11 @@ node {
         sh("docker run ${imageTag} go test")
     }
 
-    stage('Push image to registry') {
-        sh("docker login -u ${DOCKER_HUB_CREDS_USR} -p ${DOCKER_HUB_CREDS_PSW}")
-        sh("docker push ${imageTag}")
+    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        stage('Push image to registry') {
+            sh("docker login -u ${USER} -p ${PASS}")
+            sh("docker push ${imageTag}")
+        }
     }
 
     stage("Deploy Application") {
