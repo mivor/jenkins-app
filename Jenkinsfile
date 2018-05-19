@@ -4,15 +4,16 @@ node {
         DOCKER_HUB_CREDS = credentials('docker-hub')
     }
 
-    def appName = 'gceme'
-    def feSvcName = "${appName}-frontend"
-    def imageTag = "${DOCKER_HUB_CREDS_USR}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    // def appName = 'gceme'
+    // def feSvcName = "${appName}-frontend"
+    // def imageTag = "${DOCKER_HUB_CREDS_USR}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
 
     checkout scm
 
     stage('Preparation') {
         sh("curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.7/bin/linux/amd64/kubectl")
         sh("chmod +x ./kubectl && mv kubectl /usr/local/sbin")
+        sh("printenv")
     }
 
     stage('Build image') {
@@ -24,9 +25,6 @@ node {
     }
 
     stage('Push image to registry') {
-        environment {
-            DOCKER_HUB_CREDS = credentials('docker-hub')
-        }
         sh("docker login -u ${DOCKER_HUB_CREDS_USR} -p ${DOCKER_HUB_CREDS_PSW}")
         sh("docker push ${imageTag}")
     }
